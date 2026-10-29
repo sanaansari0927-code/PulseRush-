@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>REFLEX REACTOR — Test Your Reflexes!</title>
+  <meta name="description" content="A futuristic high-speed reaction time arcade game built for the Web Development Competition. Test your neural reaction speed in milliseconds across 3 difficulty tiers.">
+  <meta name="theme-color" content="#060913">
+
+  <!-- Futuristic Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Ambient Cyber Overlays & Canvas -->
+  <canvas id="particle-canvas"></canvas>
+  <div class="cyber-grid-overlay" aria-hidden="true"></div>
+  <div class="scanline-overlay" aria-hidden="true"></div>
+
+  <!-- Main Application Wrapper -->
+  <div id="app-root">
+
+    <!-- Global Header -->
+    <header class="site-header">
+      <div class="brand-badge" id="brand-badge-link" role="button" tabindex="0" title="Return to home screen">
+        <div class="brand-icon-wrapper">
+          <svg class="brand-icon" viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zm0 8.8L4.6 7 12 3.3 19.4 7 12 10.8zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="brand-text-block">
+          <span class="brand-name">Reflex Reactor</span>
+          <span class="brand-sub">Neural Testing Matrix</span>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button class="cyber-icon-btn" id="btn-how-to-play" title="How to Play" aria-label="Open game rules">
+          <svg viewBox="0 0 24 24">
+            <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
+          </svg>
+        </button>
+        <button class="cyber-icon-btn" id="btn-open-records" title="Hall of Records" aria-label="Open personal records and statistics">
+          <svg viewBox="0 0 24 24">
+            <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0011 15.9V19H7v2h10v-2h-4v-3.1c1.8-.46 3.16-1.92 3.61-3.96C19.08 11.63 21 9.55 21 7V5c0-1.1-.9-2-2-2zm-14 3V5h2v4.8c-1.2-.55-2-1.7-2-2.8zm14 0c0 1.1-.8 2.25-2 2.8V5h2v3z"/>
+          </svg>
+        </button>
+        <button class="cyber-icon-btn sound-toggle" id="btn-header-sound" title="Toggle Sound" aria-label="Toggle game audio">
+          <svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ======================================================================
+         SCREEN 1: HOME SCREEN (Landing)
+         ====================================================================== -->
+    <main class="screen-view active" id="screen-home">
+      <div class="hero-section">
+        <div class="hero-tag">
+          <span class="pulse-dot"></span>
+          <span>Core Reactor Active // v3.2</span>
+        </div>
+
+        <h1 class="hero-title">Reflex Reactor</h1>
+        <p class="hero-subtitle">Your Speed. Your Focus. Your Reflexes.</p>
+
+        <p class="hero-desc">
+          Lock in your concentration. Hit glowing reactor nodes before they destabilize.
+          Benchmark your neurological reaction time down to the exact millisecond!
+        </p>
+
+        <!-- Dynamic Animated Reactor Preview Core -->
+        <div class="reactor-preview-wrap" aria-hidden="true">
+          <div class="reactor-rings"></div>
+          <div class="mini-grid-preview">
+            <div class="mini-cell"></div>
+            <div class="mini-cell demo-glow"></div>
+            <div class="mini-cell"></div>
+            <div class="mini-cell"></div>
+            <div class="mini-cell"></div>
+            <div class="mini-cell"></div>
+            <div class="mini-cell"></div>
+            <div class="mini-cell"></div>
+            <div class="mini-cell demo-glow"></div>
+          </div>
+        </div>
+
+        <!-- Personal Records Summary Strip -->
+        <div class="home-records-strip">
+          <div class="record-pill">
+            <div class="record-pill-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
+            <div class="record-pill-info">
+              <span class="record-pill-label">Best Score</span>
+              <span class="record-pill-value" id="home-best-score">0</span>
+            </div>
+          </div>
+
+          <div class="record-pill">
+            <div class="record-pill-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+              </svg>
+            </div>
+            <div class="record-pill-info">
+              <span class="record-pill-label">Best Reaction</span>
+              <span class="record-pill-value" id="home-best-rt">--</span>
+            </div>
+          </div>
+
+          <div class="record-pill">
+            <div class="record-pill-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M13.5 2c-1.3 0-2.4.8-2.8 2C9.3 4 8 5.3 8 7c0 1 .4 1.9 1.1 2.5C7.9 10.6 7 12.2 7 14c0 3.3 2.7 6 6 6s6-2.7 6-6c0-1.8-.9-3.4-2.1-4.5.7-.6 1.1-1.5 1.1-2.5 0-1.7-1.3-3-2.7-3-.4-1.2-1.5-2-2.8-2zM13 18c-2.2 0-4-1.8-4-4 0-1.5.8-2.8 2-3.5V11c0 .6.4 1 1 1s1-.4 1-1V9.5c.3 0 .7-.1 1-.3.3.2.7.3 1 .3V11c0 .6.4 1 1 1s1-.4 1-1v-.5c1.2.7 2 2 2 3.5 0 2.2-1.8 4-4 4z"/>
+              </svg>
+            </div>
+            <div class="record-pill-info">
+              <span class="record-pill-label">Highest Streak</span>
+              <span class="record-pill-value" id="home-best-streak">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Difficulty Mode Selector -->
+        <div class="difficulty-selector-container">
+          <span class="selector-label">Select Difficulty Tier</span>
+          <div class="difficulty-group" role="radiogroup" aria-label="Difficulty Modes">
+            <button class="diff-btn" data-diff="easy" role="radio" aria-checked="false">Easy</button>
+            <button class="diff-btn active" data-diff="medium" role="radio" aria-checked="true">Medium</button>
+            <button class="diff-btn" data-diff="hard" role="radio" aria-checked="false">Hard</button>
+          </div>
+          <div class="diff-details-text" id="diff-details-text">
+            Response deadline: ~0.9s • Balanced scaling • Standard tournament challenge
+          </div>
+        </div>
+
+        <!-- Main Action Buttons -->
+        <div class="home-actions">
+          <button class="cyber-btn cyber-btn-primary" id="btn-start-game">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <span>Start Game</span>
+          </button>
+          <button class="cyber-btn cyber-btn-practice" id="btn-start-practice">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+            </svg>
+            <span>Practice Mode</span>
+          </button>
+        </div>
+
+        <!-- Brief How-To Rules Card -->
+        <div class="quick-rules-card">
+          <div class="quick-rules-header">
+            <span class="quick-rules-title">Directives & Controls</span>
+            <span class="brand-sub">900ms Human Limit</span>
+          </div>
+          <div class="rules-grid">
+            <div class="rule-item">
+              <span class="rule-num">1</span>
+              <span>Press <strong>START GAME</strong> to begin the 60-second trial.</span>
+            </div>
+            <div class="rule-item">
+              <span class="rule-num">2</span>
+              <span>Wait for a random grid panel to illuminate with cyan energy.</span>
+            </div>
+            <div class="rule-item">
+              <span class="rule-num">3</span>
+              <span>Click or tap the active panel as quickly as possible.</span>
+            </div>
+            <div class="rule-item">
+              <span class="rule-num">4</span>
+              <span>Avoid clicking inactive panels to protect your streak.</span>
+            </div>
+            <div class="rule-item">
+              <span class="rule-num">5</span>
+              <span>Score points & speed multipliers before the deadline runs out.</span>
+            </div>
+            <div class="rule-item">
+              <span class="rule-num">6</span>
+              <span>Maintain streaks to unlock huge combo multipliers!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ======================================================================
+         SCREEN 2: GAMEPLAY SCREEN & HUD
+         ====================================================================== -->
+    <main class="screen-view" id="screen-game">
+      <div class="game-layout">
+
+        <!-- Top Gaming HUD -->
+        <section class="hud-container" aria-label="Game Dashboard">
+          <div class="hud-top-row">
+            <!-- Score & Timer -->
+            <div class="hud-metric-main">
+              <div class="score-display-box">
+                <span class="metric-label">Score</span>
+                <span class="metric-value-score" id="hud-score">0</span>
+              </div>
+
+              <div class="timer-pill-box" id="hud-timer-box" title="Time remaining">
+                <div class="timer-circle-wrap">
+                  <svg class="timer-svg" viewBox="0 0 32 32">
+                    <circle class="timer-bg-circle" cx="16" cy="16" r="13"></circle>
+                    <circle class="timer-progress-circle" id="hud-timer-progress" cx="16" cy="16" r="13"></circle>
+                  </svg>
+                </div>
+                <span class="timer-digits" id="hud-timer-digits">60</span>
+              </div>
+            </div>
+
+            <!-- In-game Controls -->
+            <div class="game-controls-bar">
+              <button class="cyber-icon-btn" id="btn-pause-game" title="Pause Game (Esc/P)" aria-label="Pause game">
+                <svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              </button>
+              <button class="cyber-icon-btn sound-toggle" id="btn-game-sound" title="Toggle Sound (M)" aria-label="Toggle game audio">
+                <svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+              </button>
+              <button class="cyber-icon-btn" id="btn-quit-match" title="End Game Now" aria-label="Conclude match early">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Secondary Telemetry Grid -->
+          <div class="hud-metrics-grid">
+            <div class="hud-stat-cell">
+              <span class="stat-cell-label">Last RT</span>
+              <span class="stat-cell-val val-cyan" id="hud-last-rt">--</span>
+            </div>
+            <div class="hud-stat-cell">
+              <span class="stat-cell-label">Average RT</span>
+              <span class="stat-cell-val val-purple" id="hud-avg-rt">--</span>
+            </div>
+            <div class="hud-stat-cell">
+              <span class="stat-cell-label">Best RT</span>
+              <span class="stat-cell-val val-green" id="hud-best-rt">--</span>
+            </div>
+            <div class="hud-stat-cell">
+              <span class="stat-cell-label">Hits</span>
+              <span class="stat-cell-val val-green" id="hud-hits">0</span>
+            </div>
+            <div class="hud-stat-cell">
+              <span class="stat-cell-label">Misses</span>
+              <span class="stat-cell-val val-red" id="hud-misses">0</span>
+            </div>
+            <div class="hud-stat-cell">
+              <span class="stat-cell-label">Streak</span>
+              <span class="stat-cell-val val-cyan" id="hud-streak">0</span>
+            </div>
+            <div class="hud-stat-cell">
+              <span class="stat-cell-label">Best Streak</span>
+              <span class="stat-cell-val val-purple" id="hud-highest-streak">0</span>
+            </div>
+          </div>
+
+          <!-- Combo Multiplier Progress Bar -->
+          <div class="combo-gauge-wrapper">
+            <div class="combo-gauge-info">
+              <span>Reactor Combo Charge</span>
+              <span class="combo-multiplier-tag" id="combo-multiplier-text">1.0x COMBO</span>
+            </div>
+            <div class="combo-bar-track">
+              <div class="combo-bar-fill" id="combo-bar-fill"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3x3 Reactive Grid Matrix -->
+        <section class="reactor-arena" id="reactor-arena">
+          <!-- Countdown Overlay (3, 2, 1, GO) -->
+          <div class="countdown-overlay hidden" id="countdown-overlay">
+            <span class="countdown-label">Neural Sync</span>
+            <span class="countdown-number" id="countdown-number">3</span>
+          </div>
+
+          <!-- Pause Overlay -->
+          <div class="pause-overlay" id="pause-overlay">
+            <span class="pause-title">Reactor Frozen</span>
+            <div style="display:flex; gap: 1rem;">
+              <button class="cyber-btn cyber-btn-primary" id="btn-resume-game">Resume</button>
+              <button class="cyber-btn cyber-btn-secondary" id="btn-abort-match">Quit to Home</button>
+            </div>
+          </div>
+
+          <!-- Dynamic Milestone Banner -->
+          <div class="milestone-banner" id="milestone-banner">
+            <span id="milestone-text">5 HIT STREAK!</span>
+          </div>
+
+          <!-- 9 Interactive Reactor Panels -->
+          <div class="reactor-grid" role="grid" aria-label="3 by 3 reaction grid">
+            <button class="reactor-panel" data-index="0" aria-label="Grid panel 1">
+              <span class="panel-keycap">Q</span>
+              <div class="panel-core-glow"></div>
+            </button>
+            <button class="reactor-panel" data-index="1" aria-label="Grid panel 2">
+              <span class="panel-keycap">W</span>
+              <div class="panel-core-glow"></div>
+            </button>
+            <button class="reactor-panel" data-index="2" aria-label="Grid panel 3">
+              <span class="panel-keycap">E</span>
+              <div class="panel-core-glow"></div>
+            </button>
+            <button class="reactor-panel" data-index="3" aria-label="Grid panel 4">
+              <span class="panel-keycap">A</span>
+              <div class="panel-core-glow"></div>
+            </button>
+            <button class="reactor-panel" data-index="4" aria-label="Grid panel 5">
+              <span class="panel-keycap">S</span>
+              <div class="panel-core-glow"></div>
+            </button>
+            <button class="reactor-panel" data-index="5" aria-label="Grid panel 6">
+              <span class="panel-keycap">D</span>
+              <div class="panel-core-glow"></div>
+            </button>
+            <button class="reactor-panel" data-index="6" aria-label="Grid panel 7">
+              <span class="panel-keycap">Z</span>
+              <div class="panel-core-glow"></div>
+            </button>
+            <button class="reactor-panel" data-index="7" aria-label="Grid panel 8">
+              <span class="panel-keycap">X</span>
+              <div class="panel-core-glow"></div>
+            </button>
+            <button class="reactor-panel" data-index="8" aria-label="Grid panel 9">
+              <span class="panel-keycap">C</span>
+              <div class="panel-core-glow"></div>
+            </button>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ======================================================================
+         SCREEN 3: RESULTS SCREEN
+         ====================================================================== -->
+    <main class="screen-view" id="screen-results">
+      <div class="results-container">
+        
+        <div class="results-header">
+          <div class="results-badge-wrap">
+            <div class="new-best-banner" id="new-best-banner">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              <span>NEW PERSONAL BEST!</span>
+            </div>
+          </div>
+          <h2 class="results-title">Reactor Summary</h2>
+          <p class="results-motivation" id="res-motivation">Incredible reflexes! You broke your previous threshold!</p>
+        </div>
+
+        <!-- Player Rank Badge Card -->
+        <div class="rank-card">
+          <div class="rank-emblem">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
+            </svg>
+          </div>
+          <div class="rank-details">
+            <span class="rank-label">Assigned Rank Tier</span>
+            <span class="rank-title" id="res-rank-title">REFLEX PRO</span>
+            <span class="rank-desc" id="res-rank-desc">Consistent timing with disciplined target control.</span>
+          </div>
+        </div>
+
+        <!-- Detailed Telemetry Metrics -->
+        <div class="results-grid">
+          <div class="result-card">
+            <span class="result-card-label">Final Score</span>
+            <span class="result-card-val val-cyan" id="res-score">0</span>
+          </div>
+          <div class="result-card">
+            <span class="result-card-label">Accuracy</span>
+            <span class="result-card-val val-green" id="res-accuracy">0%</span>
+          </div>
+          <div class="result-card">
+            <span class="result-card-label">Avg Reaction</span>
+            <span class="result-card-val val-purple" id="res-avg-rt">0ms</span>
+          </div>
+          <div class="result-card">
+            <span class="result-card-label">Best Reaction</span>
+            <span class="result-card-val val-green" id="res-best-rt">0ms</span>
+          </div>
+          <div class="result-card">
+            <span class="result-card-label">Correct Hits</span>
+            <span class="result-card-val val-cyan" id="res-hits">0</span>
+          </div>
+          <div class="result-card">
+            <span class="result-card-label">Total Misses</span>
+            <span class="result-card-val val-red" id="res-misses">0</span>
+          </div>
+          <div class="result-card">
+            <span class="result-card-label">Highest Streak</span>
+            <span class="result-card-val val-purple" id="res-streak">0</span>
+          </div>
+          <div class="result-card">
+            <span class="result-card-label">Difficulty</span>
+            <span class="result-card-val" id="res-difficulty">MEDIUM</span>
+          </div>
+        </div>
+
+        <!-- Reaction Time History Chart -->
+        <div class="chart-container-box">
+          <div class="chart-header">
+            <span>Reaction Latency Timeline (ms)</span>
+            <div class="chart-legend">
+              <div class="legend-item"><span class="legend-dot" style="background:#00ff88"></span> Sub-300ms</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#00f3ff"></span> Sub-450ms</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#ffaa00"></span> 450ms+</div>
+            </div>
+          </div>
+          <div class="canvas-chart-wrap">
+            <canvas id="rt-chart-canvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Result Action Buttons -->
+        <div class="results-actions">
+          <button class="cyber-btn cyber-btn-primary" id="btn-play-again">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+            </svg>
+            <span>Play Again</span>
+          </button>
+          <button class="cyber-btn cyber-btn-secondary" id="btn-share-results">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+            </svg>
+            <span>Share Results</span>
+          </button>
+          <button class="cyber-btn cyber-btn-secondary" id="btn-results-home">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Back to Home</span>
+          </button>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="site-footer">
+      <div class="footer-copy">
+        <span>REFLEX REACTOR // Web Development Championship Edition</span>
+      </div>
+      <div class="footer-links">
+        <span class="footer-link" id="footer-records-link">Personal Records</span>
+        <span>•</span>
+        <span class="footer-link" id="footer-rules-link">Directives</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ======================================================================
+       MODAL 1: HOW TO PLAY & INSTRUCTIONS
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modal-how-to-play" role="dialog" aria-modal="true" aria-labelledby="rules-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="#00f3ff">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>
+          </svg>
+          <h3 class="modal-title" id="rules-modal-title">How To Play</h3>
+        </div>
+        <button class="modal-close-btn" id="btn-close-how-to-play" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="guide-step-card">
+          <div class="step-badge">1</div>
+          <div class="step-content">
+            <span class="step-title">Start the Trial</span>
+            <p class="step-desc">Select your difficulty mode and press <strong>START GAME</strong>. A 3-2-1 countdown will synchronize your focus before the 60-second trial starts.</p>
+          </div>
+        </div>
+
+        <div class="guide-step-card">
+          <div class="step-badge">2</div>
+          <div class="step-content">
+            <span class="step-title">Detect the Reactor Target</span>
+            <p class="step-desc">A random panel in the 3x3 matrix will illuminate with high-voltage cyan energy and trigger an acoustic tone.</p>
+          </div>
+        </div>
+
+        <div class="guide-step-card">
+          <div class="step-badge">3</div>
+          <div class="step-content">
+            <span class="step-title">Strike with High Speed</span>
+            <p class="step-desc">Click, tap, or press the matching keycap as rapidly as possible. Reactions faster than 250ms receive immense speed bonuses.</p>
+          </div>
+        </div>
+
+        <div class="guide-step-card">
+          <div class="step-badge">4</div>
+          <div class="step-content">
+            <span class="step-title">Avoid Penalties & Stale Hits</span>
+            <p class="step-desc">Clicking dark inactive panels incurs a point penalty and snaps your streak. Failing to hit before deadline counts as a timeout miss.</p>
+          </div>
+        </div>
+
+        <div class="guide-step-card">
+          <div class="step-badge">5</div>
+          <div class="step-content">
+            <span class="step-title">Build Monster Combos</span>
+            <p class="step-desc">Chain 5, 10, 15, and 20 consecutive hits to charge the combo bar up to <strong>3.0x Multiplier</strong> and earn streak milestone bonuses.</p>
+          </div>
+        </div>
+
+        <!-- Keyboard Controls Section -->
+        <div class="key-guide-box">
+          <span class="key-guide-title">Keyboard Hotkey Controls</span>
+          <div class="key-combo-row">
+            <span>Grid Top Row (Panels 1, 2, 3):</span>
+            <div>
+              <kbd class="kbd-badge">Q</kbd> <kbd class="kbd-badge">W</kbd> <kbd class="kbd-badge">E</kbd> or <kbd class="kbd-badge">7</kbd> <kbd class="kbd-badge">8</kbd> <kbd class="kbd-badge">9</kbd>
+            </div>
+          </div>
+          <div class="key-combo-row">
+            <span>Grid Middle Row (Panels 4, 5, 6):</span>
+            <div>
+              <kbd class="kbd-badge">A</kbd> <kbd class="kbd-badge">S</kbd> <kbd class="kbd-badge">D</kbd> or <kbd class="kbd-badge">4</kbd> <kbd class="kbd-badge">5</kbd> <kbd class="kbd-badge">6</kbd>
+            </div>
+          </div>
+          <div class="key-combo-row">
+            <span>Grid Bottom Row (Panels 7, 8, 9):</span>
+            <div>
+              <kbd class="kbd-badge">Z</kbd> <kbd class="kbd-badge">X</kbd> <kbd class="kbd-badge">C</kbd> or <kbd class="kbd-badge">1</kbd> <kbd class="kbd-badge">2</kbd> <kbd class="kbd-badge">3</kbd>
+            </div>
+          </div>
+          <div class="key-combo-row">
+            <span>Pause Game:</span>
+            <div><kbd class="kbd-badge">Esc</kbd> or <kbd class="kbd-badge">P</kbd></div>
+          </div>
+          <div class="key-combo-row">
+            <span>Mute / Unmute Audio:</span>
+            <div><kbd class="kbd-badge">M</kbd></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: LOCAL RECORDS / LEADERBOARD
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modal-records" role="dialog" aria-modal="true" aria-labelledby="records-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="#ffaa00">
+            <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0011 15.9V19H7v2h10v-2h-4v-3.1c1.8-.46 3.16-1.92 3.61-3.96C19.08 11.63 21 9.55 21 7V5c0-1.1-.9-2-2-2zm-14 3V5h2v4.8c-1.2-.55-2-1.7-2-2.8zm14 0c0 1.1-.8 2.25-2 2.8V5h2v3z"/>
+          </svg>
+          <h3 class="modal-title" id="records-modal-title">Local Records</h3>
+        </div>
+        <button class="modal-close-btn" id="btn-close-records" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="records-tabs" role="tablist">
+          <button class="record-tab-btn active" data-tab="easy" role="tab">Easy</button>
+          <button class="record-tab-btn" data-tab="medium" role="tab">Medium</button>
+          <button class="record-tab-btn" data-tab="hard" role="tab">Hard</button>
+        </div>
+
+        <div class="records-stat-list" id="records-stat-list">
+          <!-- Populated dynamically by UIController -->
+        </div>
+
+        <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
+          <button class="cyber-btn cyber-btn-secondary" id="btn-reset-records" style="padding: 0.5rem 1.2rem; font-size: 0.8rem; border-color: rgba(255,42,95,0.4); color: var(--neon-red);">
+            Reset Local Records
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Core Scripts in Dependency Order -->
+  <script src="js/audio.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
+
